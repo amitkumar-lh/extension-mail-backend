@@ -9,20 +9,17 @@ const port = 5000;
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
-var cron = require("node-cron");
+const json2html = require("node-json2html");
+
 
 app.post("/send", (req, res) => {
-  //console.log(req)
   const obj = {};
   const array1 = req.body.datum||[];
   const array2 = req.body.labels||[];
   const arrofObjects = array1.map((value, index) => {
     return { time: value, websiteName: array2[index] };
-  });
-  //console.log('amit',objofArrays)
+  })
   const jsonObj = JSON.stringify(obj);
-
-  const json2html = require("node-json2html");
 
   let template = { "<>": "div", html: "${time}seconds -> ${websiteName}" };
 
@@ -39,6 +36,14 @@ app.post("/send", (req, res) => {
       user: "amitbalharakr93@gmail.com",
       pass: "amit@123",
     },
+  });
+
+  transporter.verify(function (error, success) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Server is ready to take our messages');
+    }
   });
 
 
@@ -59,12 +64,4 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-// cron.schedule("* * * * *", function () {
-//     // API call goes here
-//     console.log("running a task every minute");
-//     request('http://www.google.com', function (error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//             console.log(body) // Print the google web page.
-//         }
-//     })
-// })
+
